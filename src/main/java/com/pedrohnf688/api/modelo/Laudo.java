@@ -6,25 +6,50 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+//@JsonIgnoreProperties(ignoreUnknown = true)
 @Entity
 public class Laudo {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
+
+	@JsonProperty("BatchId")
 	private String batchId;
+	
+	@JsonProperty("Sequence")
 	private String sequence;
+	
+	@JsonProperty("Date")
 	private String date;
+	
+	@JsonProperty("SampleID")
 	private String sampleid;
+	
+	@JsonProperty("Fat")
 	private float fat;
+	
+	@JsonProperty("Tru.Pro.")
 	private float trupro;
+	
+	@JsonProperty("Tot.Pro.")
 	private float totpro;
+	
+	@JsonProperty("Casein")
 	private float casein;
+	
+	@JsonProperty("Solids")
 	private float solids;
+	
+	@JsonProperty("SNF")
 	private float snf;
+	
+	@JsonProperty("FPD")
 	private float fpd;
+	
+	@JsonProperty("Urea")
 	private float urea;
 
 	
@@ -64,7 +89,6 @@ public class Laudo {
 	public String getBatchId() {
 		return batchId;
 	}
-
 
 	public void setBatchId(String batchId) {
 		this.batchId = batchId;
