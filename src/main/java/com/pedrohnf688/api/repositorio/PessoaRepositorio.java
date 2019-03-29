@@ -7,9 +7,9 @@ import javax.persistence.NamedQuery;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import com.pedrohnf688.api.modelo.Laudo;
 import com.pedrohnf688.api.modelo.Pessoa;
 
-public interface PessoaRepositorio extends JpaRepository<Pessoa, String>{
+public interface PessoaRepositorio extends JpaRepository<Laudo, String>{
 
-//	void salveAll(List<Pessoa> pessoas);
 }
