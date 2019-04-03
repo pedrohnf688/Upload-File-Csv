@@ -1,5 +1,6 @@
 package com.pedrohnf688.api.controllers;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -49,7 +50,19 @@ public class LaudoController {
 
 	@PostMapping(value = "/upload", consumes = "multipart/form-data")
 	public void uploadMultipart(@RequestParam("file") MultipartFile file) throws IOException {
-		laudoRepositorio.saveAll(CsvUtils.read(Laudo.class, file.getInputStream()));
+
+		log.info("Fazendo Upload do Arquivo Csv do Laudo");
+		
+		Response<Laudo> response = new Response<Laudo>();
+	
+		try {	
+			
+		   laudoRepositorio.saveAll(CsvUtils.read(Laudo.class, file.getInputStream()));
+		
+		}catch(FileNotFoundException e) {
+	        e.printStackTrace();
+			verificarResposta(response);   	
+		}
 	}
 
 	@GetMapping(value = "{id}")
