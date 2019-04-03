@@ -2,8 +2,10 @@ package com.pedrohnf688.api.controllers;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +28,12 @@ public class LaudoController {
 		this.pessoaRepositorio = pessoaRepositorio;
 	}
 
+	@GetMapping
+	public List<Laudo> listarLaudos() {
+		List<Laudo> laudos = this.pessoaRepositorio.findAll();
+		return laudos;
+	}
+	
 	@PostMapping(value = "/upload", consumes = "text/csv")
 	public void uploadSimple(@RequestBody InputStream body) throws IOException {
 		pessoaRepositorio.saveAll(CsvUtils.read(Laudo.class, body));
