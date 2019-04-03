@@ -55,7 +55,7 @@ public class LaudoController {
 	@GetMapping(value = "{id}")
 	public ResponseEntity<Response<Laudo>> buscarClientePorId(@PathVariable("id") Long id) {
 
-		log.info("Buscar Cliente por Id");
+		log.info("Buscar Laudo por Id");
 
 		Response<Laudo> response = new Response<Laudo>();
 
@@ -70,9 +70,9 @@ public class LaudoController {
 
 	private void verificarResposta(Response<Laudo> response) {
 		if (!response.getData().isPresent()) {
-			log.info("Cliente não encontrado");
+			log.info("Laudo não encontrado");
 
-			response.getErros().add("Cliente não encontrado");
+			response.getErros().add("Laudo não encontrado");
 
 			ResponseEntity.badRequest().body(response);
 		}
