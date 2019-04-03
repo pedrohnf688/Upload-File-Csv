@@ -52,17 +52,8 @@ public class LaudoController {
 	public void uploadMultipart(@RequestParam("file") MultipartFile file) throws IOException {
 
 		log.info("Fazendo Upload do Arquivo Csv do Laudo");
-		
-		Response<Laudo> response = new Response<Laudo>();
-	
-		try {	
-			
-		   laudoRepositorio.saveAll(CsvUtils.read(Laudo.class, file.getInputStream()));
-		
-		}catch(FileNotFoundException e) {
-	        e.printStackTrace();
-			verificarResposta(response);   	
-		}
+
+		laudoRepositorio.saveAll(CsvUtils.read(Laudo.class, file.getInputStream()));
 	}
 
 	@GetMapping(value = "{id}")
