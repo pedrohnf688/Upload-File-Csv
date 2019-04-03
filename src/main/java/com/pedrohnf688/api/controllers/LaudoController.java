@@ -42,10 +42,10 @@ public class LaudoController {
 		return laudos;
 	}
 
-	@PostMapping(value = "/upload", consumes = "text/csv")
-	public void uploadSimple(@RequestBody InputStream body) throws IOException {
-		laudoRepositorio.saveAll(CsvUtils.read(Laudo.class, body));
-	}
+//	@PostMapping(value = "/upload", consumes = "text/csv")
+//	public void uploadSimple(@RequestBody InputStream body) throws IOException {
+//		laudoRepositorio.saveAll(CsvUtils.read(Laudo.class, body));
+//	}
 
 	@PostMapping(value = "/upload", consumes = "multipart/form-data")
 	public void uploadMultipart(@RequestParam("file") MultipartFile file) throws IOException {
