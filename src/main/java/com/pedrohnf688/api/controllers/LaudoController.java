@@ -1,17 +1,23 @@
 package com.pedrohnf688.api.controllers;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
+
+import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -53,11 +59,11 @@ public class LaudoController {
 		log.info("Fazendo Upload do Arquivo Csv do Laudo");
 
 		try {
-		    laudoRepositorio.saveAll(CsvUtils.read(Laudo.class, file.getInputStream())); 
-		}catch(IOException e) {
-             e.printStackTrace();
+			laudoRepositorio.saveAll(CsvUtils.read(Laudo.class, file.getInputStream()));
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		
+
 	}
 
 	@GetMapping(value = "{id}")
@@ -74,6 +80,44 @@ public class LaudoController {
 		verificarResposta(response);
 
 		return ResponseEntity.ok(response);
+	}
+
+	@PutMapping(value = "{id}")
+	public ResponseEntity<Response<Laudo>> atualizarLaudo(@PathVariable("id") Long id, @Valid @RequestBody Laudo laudo,
+			BindingResult result) throws NoSuchAlgorithmException {
+
+		log.info("Atualizando o Laudo:{}", laudo.toString());
+
+		Response<Laudo> response = new Response<Laudo>();
+
+		Laudo laudoId = this.laudoService.buscarPorId(id);
+
+		response.setData(Optional.ofNullable(laudoId));
+
+		verificarResposta(response);
+
+		this.atualizarDadosLaudo(laudoId, laudo, result);
+
+		if (result.hasErrors()) {
+			log.error("Falta Implementar. Erro validando Laudo:{}", result.getAllErrors());
+
+			result.getAllErrors().forEach(error -> response.getErros().add(error.getDefaultMessage()));
+
+			return ResponseEntity.badRequest().body(response);
+		}
+
+		this.laudoService.salvar(laudoId);
+
+		return ResponseEntity.ok(response);
+
+	}
+
+	private void atualizarDadosLaudo(Laudo laudoId, Laudo laudo, BindingResult result) throws NoSuchAlgorithmException {
+
+		/*
+		 * Falta implementar.
+		 */
+
 	}
 
 	private void verificarResposta(Response<Laudo> response) {

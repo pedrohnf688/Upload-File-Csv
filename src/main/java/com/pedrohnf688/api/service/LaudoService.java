@@ -29,4 +29,8 @@ public class LaudoService {
 		return laudos;
 	}
 
+	public void salvar(Laudo laudo) {
+		log.info("Salvando Laudo");
+		this.laudoRepositorio.save(laudo);
+	}
 }
