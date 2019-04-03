@@ -12,29 +12,28 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.pedrohnf688.api.modelo.Laudo;
-import com.pedrohnf688.api.modelo.Pessoa;
 import com.pedrohnf688.api.repositorio.PessoaRepositorio;
 import com.pedrohnf688.api.utils.CsvUtils;
 
-
 @RestController
-@RequestMapping("/pessoa")
-public class PessoaController {
+@RequestMapping("/laudo")
+public class LaudoController {
 
+	@Autowired
 	private PessoaRepositorio pessoaRepositorio;
 
-	public PessoaController(PessoaRepositorio pessoaRepositorio) {
+	public LaudoController(PessoaRepositorio pessoaRepositorio) {
 		this.pessoaRepositorio = pessoaRepositorio;
 	}
-	
-	  @PostMapping(value = "/upload", consumes = "text/csv")
-	    public void uploadSimple(@RequestBody InputStream body) throws IOException {
-	        pessoaRepositorio.saveAll(CsvUtils.read(Laudo.class, body));
-	    }
 
-	    @PostMapping(value = "/upload", consumes = "multipart/form-data")
-	    public void uploadMultipart(@RequestParam("file") MultipartFile file) throws IOException {
-	        pessoaRepositorio.saveAll(CsvUtils.read(Laudo.class, file.getInputStream()));
-	    }
-	    
+	@PostMapping(value = "/upload", consumes = "text/csv")
+	public void uploadSimple(@RequestBody InputStream body) throws IOException {
+		pessoaRepositorio.saveAll(CsvUtils.read(Laudo.class, body));
+	}
+
+	@PostMapping(value = "/upload", consumes = "multipart/form-data")
+	public void uploadMultipart(@RequestParam("file") MultipartFile file) throws IOException {
+		pessoaRepositorio.saveAll(CsvUtils.read(Laudo.class, file.getInputStream()));
+	}
+
 }
