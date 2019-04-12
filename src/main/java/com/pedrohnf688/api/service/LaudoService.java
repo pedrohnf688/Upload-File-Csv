@@ -20,11 +20,13 @@ public class LaudoService {
 	private LaudoRepositorio laudoRepositorio;
 
 	public Laudo buscarPorId(Long id) {
+		log.info("Buscando Laudo por id");
 		Optional<Laudo> objLaudo = laudoRepositorio.findById(id);
 		return objLaudo.orElse(null);
 	}
 
 	public List<Laudo> listarLaudos() {
+		log.info("Listando Laudo");
 		List<Laudo> laudos = this.laudoRepositorio.findAll();
 		return laudos;
 	}
@@ -33,4 +35,18 @@ public class LaudoService {
 		log.info("Salvando Laudo");
 		this.laudoRepositorio.save(laudo);
 	}
+
+	public void deletarTodoLaudo() {
+		log.info("Deletando todo o Laudo");
+		this.laudoRepositorio.deleteAll();
+	}
+	
+	public List<Laudo> buscarPorBatchId(String batchId){
+		log.info("Buscando Laudo por batchId");
+		List<Laudo> laudos = this.laudoRepositorio.findByBatchId(batchId);
+		return laudos;
+	}
+	
+	
+	
 }

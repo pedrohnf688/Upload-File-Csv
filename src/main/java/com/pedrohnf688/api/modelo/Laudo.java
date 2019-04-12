@@ -1,11 +1,16 @@
 package com.pedrohnf688.api.modelo;
 
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 //@JsonIgnoreProperties(ignoreUnknown = true)
@@ -13,7 +18,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Laudo {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@JsonProperty("BatchId")
@@ -23,6 +28,7 @@ public class Laudo {
 	private String sequence;
 
 	@JsonProperty("Date")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss", timezone="GMT-3")
 	private String date;
 
 	@JsonProperty("SampleID")
@@ -52,11 +58,26 @@ public class Laudo {
 	@JsonProperty("Urea")
 	private float urea;
 
+	private float ccs;
+
+	private float cel;
+
+	private float ph;
+
+	private float den;
+
+	private float rant;
+
+	private float cbt;
+
+	private float cmt;
+
 	public Laudo() {
 	}
 
 	public Laudo(Long id, String batchId, String sequence, String date, String sampleid, float fat, float trupro,
-			float totpro, float casein, float solids, float snf, float fpd, float urea) {
+			float totpro, float casein, float solids, float snf, float fpd, float urea, float ccs, float cel, float ph,
+			float den, float rant, float cbt, float cmt) {
 		super();
 		this.id = id;
 		this.batchId = batchId;
@@ -71,6 +92,13 @@ public class Laudo {
 		this.snf = snf;
 		this.fpd = fpd;
 		this.urea = urea;
+		this.ccs = ccs;
+		this.cel = cel;
+		this.ph = ph;
+		this.den = den;
+		this.rant = rant;
+		this.cbt = cbt;
+		this.cmt = cmt;
 	}
 
 	public Long getId() {
@@ -175,6 +203,70 @@ public class Laudo {
 
 	public void setUrea(float urea) {
 		this.urea = urea;
+	}
+
+	public float getCcs() {
+		return ccs;
+	}
+
+	public void setCcs(float ccs) {
+		this.ccs = ccs;
+	}
+
+	public float getCel() {
+		return cel;
+	}
+
+	public void setCel(float cel) {
+		this.cel = cel;
+	}
+
+	public float getPh() {
+		return ph;
+	}
+
+	public void setPh(float ph) {
+		this.ph = ph;
+	}
+
+	public float getDen() {
+		return den;
+	}
+
+	public void setDen(float den) {
+		this.den = den;
+	}
+
+	public float getRant() {
+		return rant;
+	}
+
+	public void setRant(float rant) {
+		this.rant = rant;
+	}
+
+	public float getCbt() {
+		return cbt;
+	}
+
+	public void setCbt(float cbt) {
+		this.cbt = cbt;
+	}
+
+	public float getCmt() {
+		return cmt;
+	}
+
+	public void setCmt(float cmt) {
+		this.cmt = cmt;
+	}
+
+	@Override
+	public String toString() {
+		return "Laudo [id=" + id + ", batchId=" + batchId + ", sequence=" + sequence + ", date=" + date + ", sampleid="
+				+ sampleid + ", fat=" + fat + ", trupro=" + trupro + ", totpro=" + totpro + ", casein=" + casein
+				+ ", solids=" + solids + ", snf=" + snf + ", fpd=" + fpd + ", urea=" + urea + ", ccs=" + ccs + ", cel="
+				+ cel + ", ph=" + ph + ", den=" + den + ", rant=" + rant + ", cbt=" + cbt + ", cmt=" + cmt + "]";
 	}
 
 }

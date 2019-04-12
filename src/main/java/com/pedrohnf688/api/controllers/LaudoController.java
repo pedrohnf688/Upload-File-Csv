@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -67,7 +68,7 @@ public class LaudoController {
 	}
 
 	@GetMapping(value = "{id}")
-	public ResponseEntity<Response<Laudo>> buscarClientePorId(@PathVariable("id") Long id) {
+	public ResponseEntity<Response<Laudo>> buscarLaudoPorId(@PathVariable("id") Long id) {
 
 		log.info("Buscar Laudo por Id");
 
@@ -80,6 +81,14 @@ public class LaudoController {
 		verificarResposta(response);
 
 		return ResponseEntity.ok(response);
+	}
+
+	@GetMapping(value = "/batch/{batchId}")
+	public List<Laudo> buscarLaudoPorBatchId(@PathVariable("batchId") String batchId) {
+		log.info("Buscar Laudo por BatchId");
+
+		List<Laudo> laudos = this.laudoService.buscarPorBatchId(batchId);
+		return laudos;
 	}
 
 	@PutMapping(value = "{id}")
@@ -106,10 +115,15 @@ public class LaudoController {
 			return ResponseEntity.badRequest().body(response);
 		}
 
-		this.laudoService.salvar(laudoId);
+		//this.laudoService.salvar(laudoId);
 
 		return ResponseEntity.ok(response);
 
+	}
+
+	@DeleteMapping
+	public void deletarTodoLaudo() {
+		this.laudoService.deletarTodoLaudo();
 	}
 
 	private void atualizarDadosLaudo(Laudo laudoId, Laudo laudo, BindingResult result) throws NoSuchAlgorithmException {
@@ -117,6 +131,7 @@ public class LaudoController {
 		/*
 		 * Falta implementar.
 		 */
+		
 
 	}
 
