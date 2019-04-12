@@ -28,7 +28,6 @@ public class Laudo {
 	private String sequence;
 
 	@JsonProperty("Date")
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss", timezone="GMT-3")
 	private String date;
 
 	@JsonProperty("SampleID")
