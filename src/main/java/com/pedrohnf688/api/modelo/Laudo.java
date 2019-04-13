@@ -1,6 +1,6 @@
 package com.pedrohnf688.api.modelo;
 
-import java.sql.Date;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -8,9 +8,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 //@JsonIgnoreProperties(ignoreUnknown = true)
@@ -28,7 +28,7 @@ public class Laudo {
 	private String sequence;
 
 	@JsonProperty("Date")
-	private String date;
+	private LocalDate date;
 
 	@JsonProperty("SampleID")
 	private String sampleid;
@@ -74,9 +74,9 @@ public class Laudo {
 	public Laudo() {
 	}
 
-	public Laudo(Long id, String batchId, String sequence, String date, String sampleid, float fat, float trupro,
+	public Laudo(Long id, String batchId, String sequence, LocalDate date, String sampleid, float fat, float trupro,
 			float totpro, float casein, float solids, float snf, float fpd, float urea, float ccs, float cel, float ph,
-			float den, float rant, float cbt, float cmt) {
+			float den, float rant, float cbt, float cmt) throws ParseException {
 		super();
 		this.id = id;
 		this.batchId = batchId;
@@ -124,12 +124,12 @@ public class Laudo {
 		this.sequence = sequence;
 	}
 
-	public String getDate() {
+	public LocalDate getDate() {
 		return date;
 	}
 
-	public void setDate(String date) {
-		this.date = date;
+	public void setDate(String dataRecebida) throws ParseException {
+		this.date = conversao(dataRecebida);
 	}
 
 	public String getSampleid() {
@@ -266,6 +266,13 @@ public class Laudo {
 				+ sampleid + ", fat=" + fat + ", trupro=" + trupro + ", totpro=" + totpro + ", casein=" + casein
 				+ ", solids=" + solids + ", snf=" + snf + ", fpd=" + fpd + ", urea=" + urea + ", ccs=" + ccs + ", cel="
 				+ cel + ", ph=" + ph + ", den=" + den + ", rant=" + rant + ", cbt=" + cbt + ", cmt=" + cmt + "]";
+	}
+
+	public LocalDate conversao(String dataRecebida) throws ParseException {
+		DateTimeFormatter formato = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+		LocalDate data = LocalDate.parse(dataRecebida, formato);
+		System.out.println(data);
+		return data;
 	}
 
 }

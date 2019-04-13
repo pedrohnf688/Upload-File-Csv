@@ -2,6 +2,7 @@ package com.pedrohnf688.api.controllers;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Optional;
 
@@ -83,11 +84,19 @@ public class LaudoController {
 		return ResponseEntity.ok(response);
 	}
 
-	@GetMapping(value = "/batch/{batchId}")
-	public List<Laudo> buscarLaudoPorBatchId(@PathVariable("batchId") String batchId) {
+	@GetMapping(value = "/batch")
+	public List<Laudo> buscarLaudoPorBatchId(@RequestParam("batchId") String batchId) {
 		log.info("Buscar Laudo por BatchId");
 
 		List<Laudo> laudos = this.laudoService.buscarPorBatchId(batchId);
+		return laudos;
+	}
+
+	@GetMapping(value = "/dataSolicitada")
+	public List<Laudo> buscarLaudoPorData(@RequestParam("dataSolicitada") String dataSolicitada) throws ParseException {
+		log.info("Buscar Laudo por BatchId");
+
+		List<Laudo> laudos = this.laudoService.buscarPorData(dataSolicitada);
 		return laudos;
 	}
 
@@ -115,7 +124,7 @@ public class LaudoController {
 			return ResponseEntity.badRequest().body(response);
 		}
 
-		//this.laudoService.salvar(laudoId);
+		// this.laudoService.salvar(laudoId);
 
 		return ResponseEntity.ok(response);
 
@@ -126,12 +135,29 @@ public class LaudoController {
 		this.laudoService.deletarTodoLaudo();
 	}
 
+	@DeleteMapping(value = "{id}")
+	public ResponseEntity<Response<Laudo>> deletarCliente(@PathVariable("id") Long id) {
+
+		log.info("Removendo Laudo por Id: {}", id);
+
+		Response<Laudo> response = new Response<Laudo>();
+
+		Laudo laudo = this.laudoService.buscarPorId(id);
+
+		response.setData(Optional.ofNullable(laudo));
+
+		verificarResposta(response);
+
+		this.laudoService.deletaLaudoPorId(id);
+
+		return ResponseEntity.ok(response);
+	}
+
 	private void atualizarDadosLaudo(Laudo laudoId, Laudo laudo, BindingResult result) throws NoSuchAlgorithmException {
 
 		/*
 		 * Falta implementar.
 		 */
-		
 
 	}
 
