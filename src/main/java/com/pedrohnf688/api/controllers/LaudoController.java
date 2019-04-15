@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -75,9 +76,9 @@ public class LaudoController {
 
 		Response<Laudo> response = new Response<Laudo>();
 
-		Laudo laudo = this.laudoService.buscarPorId(id);
+		Optional<Laudo> laudo = this.laudoService.buscarPorId(id);
 
-		response.setData(Optional.ofNullable(laudo));
+		response.setData(laudo);
 
 		verificarResposta(response);
 
@@ -108,23 +109,23 @@ public class LaudoController {
 
 		Response<Laudo> response = new Response<Laudo>();
 
-		Laudo laudoId = this.laudoService.buscarPorId(id);
+		Optional<Laudo> laudoId = this.laudoService.buscarPorId(id);
 
-		response.setData(Optional.ofNullable(laudoId));
+		response.setData2(laudoId.get());
 
 		verificarResposta(response);
 
-		this.atualizarDadosLaudo(laudoId, laudo, result);
+		this.atualizarDadosLaudo(laudoId.get(), laudo, result);
 
 		if (result.hasErrors()) {
-			log.error("Falta Implementar. Erro validando Laudo:{}", result.getAllErrors());
+			log.error("Erro validando Laudo:{}", result.getAllErrors());
 
 			result.getAllErrors().forEach(error -> response.getErros().add(error.getDefaultMessage()));
 
 			return ResponseEntity.badRequest().body(response);
 		}
 
-		// this.laudoService.salvar(laudoId);
+		this.laudoService.salvar(laudoId.get());
 
 		return ResponseEntity.ok(response);
 
@@ -142,9 +143,9 @@ public class LaudoController {
 
 		Response<Laudo> response = new Response<Laudo>();
 
-		Laudo laudo = this.laudoService.buscarPorId(id);
+		Optional<Laudo> laudo = this.laudoService.buscarPorId(id);
 
-		response.setData(Optional.ofNullable(laudo));
+		response.setData(laudo);
 
 		verificarResposta(response);
 
@@ -155,9 +156,18 @@ public class LaudoController {
 
 	private void atualizarDadosLaudo(Laudo laudoId, Laudo laudo, BindingResult result) throws NoSuchAlgorithmException {
 
-		/*
-		 * Falta implementar.
-		 */
+//		if (!laudoId.getBatchId().equals(laudo.getBatchId())) {
+//			this.laudoService.buscarPorBatchIdOpt(laudo.getBatchId())
+//					.ifPresent(ba -> result.addError(new ObjectError("laudo", "Laudo já existente")));
+//		}
+
+		laudoId.setCbt(laudo.getCbt());
+		laudoId.setCcs(laudo.getCcs());
+		laudoId.setCel(laudo.getCel());
+		laudoId.setCmt(laudo.getCmt());
+		laudoId.setDen(laudo.getDen());
+		laudoId.setPh(laudo.getPh());
+		laudoId.setRant(laudoId.getRant());
 
 	}
 

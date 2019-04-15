@@ -10,7 +10,7 @@ public class Response<T> {
 
 	private Optional<T> data;
 	private List<String> erros;
-	private Optional<List<T>> data2;
+	private T data2;
 
 	public Response() {
 	}
@@ -23,11 +23,11 @@ public class Response<T> {
 		this.data = optional;
 	}
 
-	public Optional<List<T>> getData2() {
+	public T getData2() {
 		return data2;
 	}
 
-	public void setData2(Optional<List<T>> data2) {
+	public void setData2(T data2) {
 		this.data2 = data2;
 	}
 

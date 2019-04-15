@@ -22,10 +22,9 @@ public class LaudoService {
 	@Autowired
 	private LaudoRepositorio laudoRepositorio;
 
-	public Laudo buscarPorId(Long id) {
+	public Optional<Laudo> buscarPorId(Long id) {
 		log.info("Buscando Laudo por id");
-		Optional<Laudo> objLaudo = laudoRepositorio.findById(id);
-		return objLaudo.orElse(null);
+		return this.laudoRepositorio.findById(id);
 	}
 
 	public List<Laudo> listarLaudos() {
@@ -56,6 +55,11 @@ public class LaudoService {
 		return laudos;
 	}
 
+	public Optional<Laudo> buscarPorBatchIdOpt(String batchId) {
+		log.info("Buscando Laudo por batchId");
+		return Optional.ofNullable(this.laudoRepositorio.findAllByBatchId(batchId));
+	}
+
 	public List<Laudo> buscarPorData(String dataSolicitada) throws ParseException {
 		log.info("Buscando Laudo por Data");
 		List<Laudo> laudos = this.laudoRepositorio.findAllByDate(conversao(dataSolicitada));
@@ -67,6 +71,23 @@ public class LaudoService {
 		LocalDate data = LocalDate.parse(dataSolicitada, formato);
 		System.out.println(data);
 		return data;
+	}
+
+	public List<Laudo> FiltroLaudo(List<Laudo> laudoRecebido) {
+		log.info("Filtrar Dados para o Novo Laudo");
+
+		int contValores = 0;
+		int vetor[] = new int[laudoRecebido.size()];
+
+		for (int i = 0; i < laudoRecebido.size(); i++) {
+			for (int j = 0; j < laudoRecebido.size(); j++) {
+				if (laudoRecebido.get(i).getSequence().equals(laudoRecebido.get(j).getSequence())) {
+					contValores++;
+				}
+			}
+		}
+
+		return null;
 	}
 
 }
