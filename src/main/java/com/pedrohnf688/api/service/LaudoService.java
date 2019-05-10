@@ -73,18 +73,21 @@ public class LaudoService {
 		return data;
 	}
 
-	public List<Laudo> FiltroLaudo(List<Laudo> laudoRecebido) {
-		log.info("Filtrar Dados para o Novo Laudo");
+	public List<Laudo> FiltrarDados() {
 
-		int contValores = 0;
-		int vetor[] = new int[laudoRecebido.size()];
+		List<Laudo> laudoRecebido = this.laudoRepositorio.findAll();
+		int contRepetidos = 0;
 
 		for (int i = 0; i < laudoRecebido.size(); i++) {
+			contRepetidos = 0;
 			for (int j = 0; j < laudoRecebido.size(); j++) {
-				if (laudoRecebido.get(i).getSequence().equals(laudoRecebido.get(j).getSequence())) {
-					contValores++;
+				if (laudoRecebido.get(i).getSequence() == laudoRecebido.get(j).getSequence()) {
+					contRepetidos++;
 				}
+
 			}
+			System.out.println(
+					"\n Repeticões numero " + laudoRecebido.get(i).getSequence() + ": " + contRepetidos + " vezes");
 		}
 
 		return null;

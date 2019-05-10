@@ -8,6 +8,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
+
+import org.hibernate.annotations.Cascade;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -17,7 +20,7 @@ public class Laudo {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private Integer id;
 
 	@JsonProperty("BatchId")
 	private String batchId;
@@ -32,77 +35,51 @@ public class Laudo {
 	private String sampleid;
 
 	@JsonProperty("Fat")
-	private float fat;
+	private String fat;
 
 	@JsonProperty("Tru.Pro.")
-	private float trupro;
+	private String trupro;
 
 	@JsonProperty("Tot.Pro.")
-	private float totpro;
+	private String totpro;
 
 	@JsonProperty("Casein")
-	private float casein;
+	private String casein;
 
 	@JsonProperty("Solids")
-	private float solids;
+	private String solids;
 
 	@JsonProperty("SNF")
-	private float snf;
+	private String snf;
 
 	@JsonProperty("FPD")
-	private float fpd;
+	private String fpd;
 
 	@JsonProperty("Urea")
-	private float urea;
+	private String urea;
 
-	private float ccs;
+	private String ccs;
 
-	private float cel;
+	private String cel;
 
-	private float ph;
+	private String ph;
 
-	private float den;
+	private String den;
 
-	private float rant;
+	private String rant;
 
-	private float cbt;
+	private String cbt;
 
-	private float cmt;
+	private String cmt;
 
 	public Laudo() {
 	}
 
-	public Laudo(Long id, String batchId, String sequence, LocalDate date, String sampleid, float fat, float trupro,
-			float totpro, float casein, float solids, float snf, float fpd, float urea, float ccs, float cel, float ph,
-			float den, float rant, float cbt, float cmt) throws ParseException {
-		super();
-		this.id = id;
-		this.batchId = batchId;
-		this.sequence = sequence;
-		this.date = date;
-		this.sampleid = sampleid;
-		this.fat = fat;
-		this.trupro = trupro;
-		this.totpro = totpro;
-		this.casein = casein;
-		this.solids = solids;
-		this.snf = snf;
-		this.fpd = fpd;
-		this.urea = urea;
-		this.ccs = ccs;
-		this.cel = cel;
-		this.ph = ph;
-		this.den = den;
-		this.rant = rant;
-		this.cbt = cbt;
-		this.cmt = cmt;
-	}
-
-	public Long getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
@@ -138,124 +115,128 @@ public class Laudo {
 		this.sampleid = sampleid;
 	}
 
-	public float getFat() {
+	public String getFat() {
 		return fat;
 	}
 
-	public void setFat(float fat) {
+	public void setFat(String fat) {
 		this.fat = fat;
 	}
 
-	public float getTrupro() {
+	public String getTrupro() {
 		return trupro;
 	}
 
-	public void setTrupro(float trupro) {
+	public void setTrupro(String trupro) {
 		this.trupro = trupro;
 	}
 
-	public float getTotpro() {
+	public String getTotpro() {
 		return totpro;
 	}
 
-	public void setTotpro(float totpro) {
+	public void setTotpro(String totpro) {
 		this.totpro = totpro;
 	}
 
-	public float getCasein() {
+	public String getCasein() {
 		return casein;
 	}
 
-	public void setCasein(float casein) {
+	public void setCasein(String casein) {
 		this.casein = casein;
 	}
 
-	public float getSolids() {
+	public String getSolids() {
 		return solids;
 	}
 
-	public void setSolids(float solids) {
+	public void setSolids(String solids) {
 		this.solids = solids;
 	}
 
-	public float getSnf() {
+	public String getSnf() {
 		return snf;
 	}
 
-	public void setSnf(float snf) {
+	public void setSnf(String snf) {
 		this.snf = snf;
 	}
 
-	public float getFpd() {
+	public String getFpd() {
 		return fpd;
 	}
 
-	public void setFpd(float fpd) {
+	public void setFpd(String fpd) {
 		this.fpd = fpd;
 	}
 
-	public float getUrea() {
+	public String getUrea() {
 		return urea;
 	}
 
-	public void setUrea(float urea) {
+	public void setUrea(String urea) {
 		this.urea = urea;
 	}
 
-	public float getCcs() {
+	public String getCcs() {
 		return ccs;
 	}
 
-	public void setCcs(float ccs) {
+	public void setCcs(String ccs) {
 		this.ccs = ccs;
 	}
 
-	public float getCel() {
+	public String getCel() {
 		return cel;
 	}
 
-	public void setCel(float cel) {
+	public void setCel(String cel) {
 		this.cel = cel;
 	}
 
-	public float getPh() {
+	public String getPh() {
 		return ph;
 	}
 
-	public void setPh(float ph) {
+	public void setPh(String ph) {
 		this.ph = ph;
 	}
 
-	public float getDen() {
+	public String getDen() {
 		return den;
 	}
 
-	public void setDen(float den) {
+	public void setDen(String den) {
 		this.den = den;
 	}
 
-	public float getRant() {
+	public String getRant() {
 		return rant;
 	}
 
-	public void setRant(float rant) {
+	public void setRant(String rant) {
 		this.rant = rant;
 	}
 
-	public float getCbt() {
+	public String getCbt() {
 		return cbt;
 	}
 
-	public void setCbt(float cbt) {
+	public void setCbt(String cbt) {
 		this.cbt = cbt;
 	}
 
-	public float getCmt() {
+	public String getCmt() {
 		return cmt;
 	}
 
-	public void setCmt(float cmt) {
+	public void setCmt(String cmt) {
 		this.cmt = cmt;
+	}
+
+	public void setDate(LocalDate date) {
+		this.date = date;
 	}
 
 	@Override

@@ -8,27 +8,18 @@ import com.pedrohnf688.api.modelo.Laudo;
 
 public class Response<T> {
 
-	private Optional<T> data;
+	private T data;
 	private List<String> erros;
-	private T data2;
 
 	public Response() {
 	}
 
-	public Optional<T> getData() {
+	public T getData() {
 		return data;
 	}
 
-	public void setData(Optional<T> optional) {
-		this.data = optional;
-	}
-
-	public T getData2() {
-		return data2;
-	}
-
-	public void setData2(T data2) {
-		this.data2 = data2;
+	public void setData(T data) {
+		this.data = data;
 	}
 
 	public List<String> getErros() {

@@ -1,11 +1,20 @@
 package com.pedrohnf688.api.controllers;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.security.NoSuchAlgorithmException;
+import java.sql.SQLException;
 import java.text.ParseException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -13,7 +22,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,9 +36,17 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.pedrohnf688.api.config.Response;
 import com.pedrohnf688.api.modelo.Laudo;
+import com.pedrohnf688.api.modelo.LaudoMedia;
 import com.pedrohnf688.api.repositorio.LaudoRepositorio;
 import com.pedrohnf688.api.service.LaudoService;
 import com.pedrohnf688.api.utils.CsvUtils;
+
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.util.JRLoader;
 
 @RestController
 @RequestMapping("/laudo")
@@ -38,6 +54,9 @@ import com.pedrohnf688.api.utils.CsvUtils;
 public class LaudoController {
 
 	private static final Logger log = LoggerFactory.getLogger(LaudoController.class);
+
+	@Autowired
+	private DataSource dataSource;
 
 	@Autowired
 	private LaudoService laudoService;
@@ -58,7 +77,6 @@ public class LaudoController {
 
 	@PostMapping(value = "/upload", consumes = "multipart/form-data")
 	public void uploadMultipart(@RequestParam("file") MultipartFile file) throws IOException {
-
 		log.info("Fazendo Upload do Arquivo Csv do Laudo");
 
 		try {
@@ -69,20 +87,46 @@ public class LaudoController {
 
 	}
 
+
+	@PostMapping
+	public ResponseEntity<Response<Laudo>> cadastrarLaudo(@Valid @RequestBody Laudo laudo, BindingResult result)
+			throws NoSuchAlgorithmException {
+		log.info("Cadastrando Laudo:{}", laudo.toString());
+
+		Response<Laudo> response = new Response<Laudo>();
+
+		validarDadosExistentes(laudo, result);
+
+		if (result.hasErrors()) {
+			log.error("Erro Validando Dados do Cadastro do Laudo: {}", result.getAllErrors());
+			result.getAllErrors().forEach(error -> response.getErros().add(error.getDefaultMessage()));
+			return ResponseEntity.badRequest().body(response);
+		}
+
+		this.laudoService.salvar(laudo);
+		response.setData(laudo);
+
+		return ResponseEntity.ok(response);
+	}
+
 	@GetMapping(value = "{id}")
 	public ResponseEntity<Response<Laudo>> buscarLaudoPorId(@PathVariable("id") Long id) {
-
 		log.info("Buscar Laudo por Id");
 
 		Response<Laudo> response = new Response<Laudo>();
 
 		Optional<Laudo> laudo = this.laudoService.buscarPorId(id);
 
-		response.setData(laudo);
+		if (!laudo.isPresent()) {
+			log.info("Laudo não encontrado");
+			response.getErros().add("Laudo não encontrado");
+			ResponseEntity.badRequest().body(response);
+		}
 
-		verificarResposta(response);
+		response.setData(laudo.get());
 
 		return ResponseEntity.ok(response);
+
 	}
 
 	@GetMapping(value = "/batch")
@@ -104,28 +148,28 @@ public class LaudoController {
 	@PutMapping(value = "{id}")
 	public ResponseEntity<Response<Laudo>> atualizarLaudo(@PathVariable("id") Long id, @Valid @RequestBody Laudo laudo,
 			BindingResult result) throws NoSuchAlgorithmException {
-
 		log.info("Atualizando o Laudo:{}", laudo.toString());
 
 		Response<Laudo> response = new Response<Laudo>();
 
 		Optional<Laudo> laudoId = this.laudoService.buscarPorId(id);
 
-		response.setData2(laudoId.get());
-
-		verificarResposta(response);
+		if (!laudoId.isPresent()) {
+			log.info("Laudo não encontrado");
+			response.getErros().add("Laudo não encontrado");
+			ResponseEntity.badRequest().body(response);
+		}
 
 		this.atualizarDadosLaudo(laudoId.get(), laudo, result);
 
 		if (result.hasErrors()) {
 			log.error("Erro validando Laudo:{}", result.getAllErrors());
-
 			result.getAllErrors().forEach(error -> response.getErros().add(error.getDefaultMessage()));
-
 			return ResponseEntity.badRequest().body(response);
 		}
 
 		this.laudoService.salvar(laudoId.get());
+		response.setData(laudoId.get());
 
 		return ResponseEntity.ok(response);
 
@@ -138,28 +182,59 @@ public class LaudoController {
 
 	@DeleteMapping(value = "{id}")
 	public ResponseEntity<Response<Laudo>> deletarCliente(@PathVariable("id") Long id) {
-
 		log.info("Removendo Laudo por Id: {}", id);
 
 		Response<Laudo> response = new Response<Laudo>();
 
 		Optional<Laudo> laudo = this.laudoService.buscarPorId(id);
 
-		response.setData(laudo);
+		if (!laudo.isPresent()) {
+			log.info("Laudo não encontrado");
+			response.getErros().add("Laudo não encontrado");
+			ResponseEntity.badRequest().body(response);
+		}
 
-		verificarResposta(response);
+		response.setData(laudo.get());
 
 		this.laudoService.deletaLaudoPorId(id);
 
 		return ResponseEntity.ok(response);
 	}
 
-	private void atualizarDadosLaudo(Laudo laudoId, Laudo laudo, BindingResult result) throws NoSuchAlgorithmException {
+	// Falta colocar o relatorio pra ser gerado
+	@GetMapping(value = "relatorio/{id}")
+	public void imprimir(@PathVariable("id") Integer id, HttpServletResponse response)
+			throws JRException, SQLException, IOException {
+		log.info("Gerando Relatorio do Laudo para Id: {}", id);
 
-//		if (!laudoId.getBatchId().equals(laudo.getBatchId())) {
-//			this.laudoService.buscarPorBatchIdOpt(laudo.getBatchId())
-//					.ifPresent(ba -> result.addError(new ObjectError("laudo", "Laudo já existente")));
-//		}
+		Map<String, Object> parametros = new HashMap<>();
+
+		parametros.put("Id_pessoa", id);
+
+		// Pega o arquivo .jasper localizado em resources
+		InputStream jasperStream = this.getClass().getResourceAsStream("/relatorios/reportProduto.jasper");
+
+		// Cria o objeto JaperReport com o Stream do arquivo jasper
+		JasperReport jasperReport = (JasperReport) JRLoader.loadObject(jasperStream);
+		// Passa para o JasperPrint o relatório, os parâmetros e a fonte dos dados, no
+		// caso uma conexão ao banco de dados
+		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros, dataSource.getConnection());
+
+		// Configura a respota para o tipo PDF
+		response.setContentType("application/pdf");
+		// Define que o arquivo pode ser visualizado no navegador e também nome final do
+		// arquivo
+		// para fazer download do relatório troque 'inline' por 'attachment'
+		response.setHeader("Content-Disposition", "inline; filename=reportProduto.pdf");
+
+		// Faz a exportação do relatório para o HttpServletResponse
+		final OutputStream outStream = response.getOutputStream();
+		JasperExportManager.exportReportToPdfStream(jasperPrint, outStream);
+	}
+
+	// Falta fazer o metodo pra filtrar os dados do laudo
+
+	private void atualizarDadosLaudo(Laudo laudoId, Laudo laudo, BindingResult result) throws NoSuchAlgorithmException {
 
 		laudoId.setCbt(laudo.getCbt());
 		laudoId.setCcs(laudo.getCcs());
@@ -167,18 +242,14 @@ public class LaudoController {
 		laudoId.setCmt(laudo.getCmt());
 		laudoId.setDen(laudo.getDen());
 		laudoId.setPh(laudo.getPh());
-		laudoId.setRant(laudoId.getRant());
+		laudoId.setRant(laudo.getRant());
+
+		laudoId = laudo;
 
 	}
 
-	private void verificarResposta(Response<Laudo> response) {
-		if (!response.getData().isPresent()) {
-			log.info("Laudo não encontrado");
+	private void validarDadosExistentes(Laudo l, BindingResult result) {
 
-			response.getErros().add("Laudo não encontrado");
-
-			ResponseEntity.badRequest().body(response);
-		}
 	}
 
 }
