@@ -22,7 +22,7 @@ public class LaudoService {
 	@Autowired
 	private LaudoRepositorio laudoRepositorio;
 
-	public Optional<Laudo> buscarPorId(Long id) {
+	public Optional<Laudo> buscarPorId(Integer id) {
 		log.info("Buscando Laudo por id");
 		return this.laudoRepositorio.findById(id);
 	}
@@ -44,7 +44,7 @@ public class LaudoService {
 
 	}
 
-	public void deletaLaudoPorId(Long id) {
+	public void deletaLaudoPorId(Integer id) {
 		log.info("Deletando Laudo por Id");
 		this.laudoRepositorio.deleteById(id);
 	}

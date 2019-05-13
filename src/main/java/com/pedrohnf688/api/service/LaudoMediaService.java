@@ -18,9 +18,9 @@ public class LaudoMediaService {
 	@Autowired
 	private LaudoMediaRepositorio laudoMediaRepositorio;
 
-	public void salvar(LaudoMedia l) {
+	public LaudoMedia salvar(LaudoMedia l) {
 		log.info("Salvando a Media do Laudo");
-		this.laudoMediaRepositorio.save(l);
+		return this.laudoMediaRepositorio.save(l);
 	}
 
 	public List<LaudoMedia> listarTodasMedias() {

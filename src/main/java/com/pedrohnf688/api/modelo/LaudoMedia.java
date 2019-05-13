@@ -1,12 +1,15 @@
 package com.pedrohnf688.api.modelo;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 @Entity
 public class LaudoMedia {
@@ -30,7 +33,9 @@ public class LaudoMedia {
 	private double cbt;
 	private double cmt;
 
-	private Laudo laudo;
+	@OneToMany(orphanRemoval = true)
+	@Cascade({ CascadeType.ALL })
+	private List<Laudo> listaLaudos;
 
 	public LaudoMedia() {
 		super();
@@ -164,14 +169,12 @@ public class LaudoMedia {
 		this.cmt = cmt;
 	}
 
-	@OneToOne
-	@Cascade({ org.hibernate.annotations.CascadeType.ALL })
-	public Laudo getLaudo() {
-		return laudo;
+	public List<Laudo> getListaLaudos() {
+		return listaLaudos;
 	}
 
-	public void setLaudo(Laudo laudo) {
-		this.laudo = laudo;
+	public void setListaLaudos(List<Laudo> listaLaudos) {
+		this.listaLaudos = listaLaudos;
 	}
 
 	@Override

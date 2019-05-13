@@ -7,10 +7,10 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.pedrohnf688.api.config.Response;
@@ -32,18 +32,17 @@ public class LaudoMediaController {
 	@Autowired
 	private LaudoMediaService laudoMediaService;
 
-	@GetMapping
-	public List<LaudoMedia> listarMedidaLaudos() {
-		return this.laudoMediaService.listarTodasMedias();
+	@PutMapping("/batchId")
+	public LaudoMedia MedidaLaudos(@RequestParam("batchId") String batchId) {
+		return this.laudoMediaService.salvar(mediaAritmeticaLaudo(batchId));
 	}
 
-	@GetMapping(value = "/Gerarmedia")
-	public ResponseEntity<Response<LaudoMedia>> mediaAritmeticaLaudo() {
+	public LaudoMedia mediaAritmeticaLaudo(String batchId) {
 		log.info("Metodo para gerar a media dos atributos do laudo por solicitação:");
 
 		Response<LaudoMedia> response = new Response<LaudoMedia>();
 
-		List<Laudo> laudos = this.laudoService.listarLaudos();
+		List<Laudo> laudos = this.laudoService.buscarPorBatchId(batchId);
 
 		String regex = "[+-]?[0-9]+(\\.[0-9]+)?([Ee][+-]?[0-9]+)?";
 		// compiling regex
@@ -69,7 +68,7 @@ public class LaudoMediaController {
 		int cont = 0;
 
 		for (int i = 0; i < laudos.size(); i++) {
-
+			
 			Matcher m1 = p.matcher(laudos.get(i).getCasein() != null ? laudos.get(i).getCasein() : "0");
 			Matcher m2 = p.matcher(laudos.get(i).getCbt() != null ? laudos.get(i).getCbt() : "0");
 			Matcher m3 = p.matcher(laudos.get(i).getCcs() != null ? laudos.get(i).getCcs() : "0");
@@ -174,12 +173,12 @@ public class LaudoMediaController {
 		l.setTrupro(media14);
 		l.setUrea(media15);
 
+		l.setListaLaudos(laudos);
 		this.laudoMediaService.salvar(l);
 
-		response.setData(l);
-		log.info("Contador:{}",cont);
+		log.info("Contador:{}", cont);
 
-		return ResponseEntity.ok(response);
+		return l;
 	}
 
 }

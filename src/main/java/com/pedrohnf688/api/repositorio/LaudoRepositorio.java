@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.pedrohnf688.api.modelo.Laudo;
 
-public interface LaudoRepositorio extends JpaRepository<Laudo, Long> {
+public interface LaudoRepositorio extends JpaRepository<Laudo, Integer> {
 
 	List<Laudo> findByBatchId(String batchId);
 

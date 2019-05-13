@@ -37,7 +37,9 @@ import org.springframework.web.multipart.MultipartFile;
 import com.pedrohnf688.api.config.Response;
 import com.pedrohnf688.api.modelo.Laudo;
 import com.pedrohnf688.api.modelo.LaudoMedia;
+import com.pedrohnf688.api.repositorio.LaudoMediaRepositorio;
 import com.pedrohnf688.api.repositorio.LaudoRepositorio;
+import com.pedrohnf688.api.service.LaudoMediaService;
 import com.pedrohnf688.api.service.LaudoService;
 import com.pedrohnf688.api.utils.CsvUtils;
 
@@ -64,6 +66,12 @@ public class LaudoController {
 	@Autowired
 	private LaudoRepositorio laudoRepositorio;
 
+	@Autowired
+	private LaudoMediaRepositorio laudoMediaRepositorio;
+
+	@Autowired
+	private LaudoMediaService laudoMediaService;
+
 	@GetMapping
 	public List<Laudo> listarLaudos() {
 		List<Laudo> laudos = this.laudoService.listarLaudos();
@@ -80,13 +88,14 @@ public class LaudoController {
 		log.info("Fazendo Upload do Arquivo Csv do Laudo");
 
 		try {
+
 			laudoRepositorio.saveAll(CsvUtils.read(Laudo.class, file.getInputStream()));
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 	}
-
 
 	@PostMapping
 	public ResponseEntity<Response<Laudo>> cadastrarLaudo(@Valid @RequestBody Laudo laudo, BindingResult result)
@@ -94,7 +103,7 @@ public class LaudoController {
 		log.info("Cadastrando Laudo:{}", laudo.toString());
 
 		Response<Laudo> response = new Response<Laudo>();
-
+    
 		validarDadosExistentes(laudo, result);
 
 		if (result.hasErrors()) {
@@ -110,7 +119,7 @@ public class LaudoController {
 	}
 
 	@GetMapping(value = "{id}")
-	public ResponseEntity<Response<Laudo>> buscarLaudoPorId(@PathVariable("id") Long id) {
+	public ResponseEntity<Response<Laudo>> buscarLaudoPorId(@PathVariable("id") Integer id) {
 		log.info("Buscar Laudo por Id");
 
 		Response<Laudo> response = new Response<Laudo>();
@@ -146,8 +155,8 @@ public class LaudoController {
 	}
 
 	@PutMapping(value = "{id}")
-	public ResponseEntity<Response<Laudo>> atualizarLaudo(@PathVariable("id") Long id, @Valid @RequestBody Laudo laudo,
-			BindingResult result) throws NoSuchAlgorithmException {
+	public ResponseEntity<Response<Laudo>> atualizarLaudo(@PathVariable("id") Integer id,
+			@Valid @RequestBody Laudo laudo, BindingResult result) throws NoSuchAlgorithmException {
 		log.info("Atualizando o Laudo:{}", laudo.toString());
 
 		Response<Laudo> response = new Response<Laudo>();
@@ -181,7 +190,7 @@ public class LaudoController {
 	}
 
 	@DeleteMapping(value = "{id}")
-	public ResponseEntity<Response<Laudo>> deletarCliente(@PathVariable("id") Long id) {
+	public ResponseEntity<Response<Laudo>> deletarCliente(@PathVariable("id") Integer id) {
 		log.info("Removendo Laudo por Id: {}", id);
 
 		Response<Laudo> response = new Response<Laudo>();
