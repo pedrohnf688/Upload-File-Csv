@@ -16,22 +16,22 @@ public class LaudoMedia {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
-	private double fat;
-	private double trupro;
-	private double totpro;
-	private double casein;
-	private double solids;
-	private double snf;
-	private double fpd;
-	private double urea;
-	private double ccs;
-	private double cel;
-	private double ph;
-	private double den;
-	private double rant;
-	private double cbt;
-	private double cmt;
+	private Integer idMedia;
+	private double fatMedia;
+	private double truproMedia;
+	private double totproMedia;
+	private double caseinMedia;
+	private double solidsMedia;
+	private double snfMedia;
+	private double fpdMedia;
+	private double ureaMedia;
+	private double ccsMedia;
+	private double celMedia;
+	private double phMedia;
+	private double denMedia;
+	private double rantMedia;
+	private double cbtMedia;
+	private double cmtMedia;
 
 	@OneToMany(orphanRemoval = true)
 	@Cascade({ CascadeType.ALL })
@@ -41,132 +41,132 @@ public class LaudoMedia {
 		super();
 	}
 
-	public Integer getId() {
-		return id;
+	public Integer getIdMedia() {
+		return idMedia;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public void setIdMedia(Integer idMedia) {
+		this.idMedia = idMedia;
 	}
 
-	public double getFat() {
-		return fat;
+	public double getFatMedia() {
+		return fatMedia;
 	}
 
-	public void setFat(double fat) {
-		this.fat = fat;
+	public void setFatMedia(double fatMedia) {
+		this.fatMedia = fatMedia;
 	}
 
-	public double getTrupro() {
-		return trupro;
+	public double getTruproMedia() {
+		return truproMedia;
 	}
 
-	public void setTrupro(double trupro) {
-		this.trupro = trupro;
+	public void setTruproMedia(double truproMedia) {
+		this.truproMedia = truproMedia;
 	}
 
-	public double getTotpro() {
-		return totpro;
+	public double getTotproMedia() {
+		return totproMedia;
 	}
 
-	public void setTotpro(double totpro) {
-		this.totpro = totpro;
+	public void setTotproMedia(double totproMedia) {
+		this.totproMedia = totproMedia;
 	}
 
-	public double getCasein() {
-		return casein;
+	public double getCaseinMedia() {
+		return caseinMedia;
 	}
 
-	public void setCasein(double casein) {
-		this.casein = casein;
+	public void setCaseinMedia(double caseinMedia) {
+		this.caseinMedia = caseinMedia;
 	}
 
-	public double getSolids() {
-		return solids;
+	public double getSolidsMedia() {
+		return solidsMedia;
 	}
 
-	public void setSolids(double solids) {
-		this.solids = solids;
+	public void setSolidsMedia(double solidsMedia) {
+		this.solidsMedia = solidsMedia;
 	}
 
-	public double getSnf() {
-		return snf;
+	public double getSnfMedia() {
+		return snfMedia;
 	}
 
-	public void setSnf(double snf) {
-		this.snf = snf;
+	public void setSnfMedia(double snfMedia) {
+		this.snfMedia = snfMedia;
 	}
 
-	public double getFpd() {
-		return fpd;
+	public double getFpdMedia() {
+		return fpdMedia;
 	}
 
-	public void setFpd(double fpd) {
-		this.fpd = fpd;
+	public void setFpdMedia(double fpdMedia) {
+		this.fpdMedia = fpdMedia;
 	}
 
-	public double getUrea() {
-		return urea;
+	public double getUreaMedia() {
+		return ureaMedia;
 	}
 
-	public void setUrea(double urea) {
-		this.urea = urea;
+	public void setUreaMedia(double ureaMedia) {
+		this.ureaMedia = ureaMedia;
 	}
 
-	public double getCcs() {
-		return ccs;
+	public double getCcsMedia() {
+		return ccsMedia;
 	}
 
-	public void setCcs(double ccs) {
-		this.ccs = ccs;
+	public void setCcsMedia(double ccsMedia) {
+		this.ccsMedia = ccsMedia;
 	}
 
-	public double getCel() {
-		return cel;
+	public double getCelMedia() {
+		return celMedia;
 	}
 
-	public void setCel(double cel) {
-		this.cel = cel;
+	public void setCelMedia(double celMedia) {
+		this.celMedia = celMedia;
 	}
 
-	public double getPh() {
-		return ph;
+	public double getPhMedia() {
+		return phMedia;
 	}
 
-	public void setPh(double ph) {
-		this.ph = ph;
+	public void setPhMedia(double phMedia) {
+		this.phMedia = phMedia;
 	}
 
-	public double getDen() {
-		return den;
+	public double getDenMedia() {
+		return denMedia;
 	}
 
-	public void setDen(double den) {
-		this.den = den;
+	public void setDenMedia(double denMedia) {
+		this.denMedia = denMedia;
 	}
 
-	public double getRant() {
-		return rant;
+	public double getRantMedia() {
+		return rantMedia;
 	}
 
-	public void setRant(double rant) {
-		this.rant = rant;
+	public void setRantMedia(double rantMedia) {
+		this.rantMedia = rantMedia;
 	}
 
-	public double getCbt() {
-		return cbt;
+	public double getCbtMedia() {
+		return cbtMedia;
 	}
 
-	public void setCbt(double cbt) {
-		this.cbt = cbt;
+	public void setCbtMedia(double cbtMedia) {
+		this.cbtMedia = cbtMedia;
 	}
 
-	public double getCmt() {
-		return cmt;
+	public double getCmtMedia() {
+		return cmtMedia;
 	}
 
-	public void setCmt(double cmt) {
-		this.cmt = cmt;
+	public void setCmtMedia(double cmtMedia) {
+		this.cmtMedia = cmtMedia;
 	}
 
 	public List<Laudo> getListaLaudos() {
@@ -179,10 +179,12 @@ public class LaudoMedia {
 
 	@Override
 	public String toString() {
-		return "LaudoMedia [id=" + id + ", fat=" + fat + ", trupro=" + trupro + ", totpro=" + totpro + ", casein="
-				+ casein + ", solids=" + solids + ", snf=" + snf + ", fpd=" + fpd + ", urea=" + urea + ", ccs=" + ccs
-				+ ", cel=" + cel + ", ph=" + ph + ", den=" + den + ", rant=" + rant + ", cbt=" + cbt + ", cmt=" + cmt
-				+ "]";
+		return "LaudoMedia [idMedia=" + idMedia + ", fatMedia=" + fatMedia + ", truproMedia=" + truproMedia
+				+ ", totproMedia=" + totproMedia + ", caseinMedia=" + caseinMedia + ", solidsMedia=" + solidsMedia
+				+ ", snfMedia=" + snfMedia + ", fpdMedia=" + fpdMedia + ", ureaMedia=" + ureaMedia + ", ccsMedia="
+				+ ccsMedia + ", celMedia=" + celMedia + ", phMedia=" + phMedia + ", denMedia=" + denMedia
+				+ ", rantMedia=" + rantMedia + ", cbtMedia=" + cbtMedia + ", cmtMedia=" + cmtMedia + ", listaLaudos="
+				+ listaLaudos + "]";
 	}
 
 }

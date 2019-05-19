@@ -97,13 +97,23 @@ public class LaudoController {
 
 	}
 
+	public List<Laudo> PreenchimentodeDados(){
+		List<Laudo> listaLaudo = laudoService.listarLaudos();
+		
+		for (int i = 0; i < listaLaudo.size(); i++) {
+			
+		}
+		return null;
+	}
+	
+	
 	@PostMapping
 	public ResponseEntity<Response<Laudo>> cadastrarLaudo(@Valid @RequestBody Laudo laudo, BindingResult result)
 			throws NoSuchAlgorithmException {
 		log.info("Cadastrando Laudo:{}", laudo.toString());
 
 		Response<Laudo> response = new Response<Laudo>();
-    
+
 		validarDadosExistentes(laudo, result);
 
 		if (result.hasErrors()) {
@@ -208,37 +218,6 @@ public class LaudoController {
 		this.laudoService.deletaLaudoPorId(id);
 
 		return ResponseEntity.ok(response);
-	}
-
-	// Falta colocar o relatorio pra ser gerado
-	@GetMapping(value = "relatorio/{id}")
-	public void imprimir(@PathVariable("id") Integer id, HttpServletResponse response)
-			throws JRException, SQLException, IOException {
-		log.info("Gerando Relatorio do Laudo para Id: {}", id);
-
-		Map<String, Object> parametros = new HashMap<>();
-
-		parametros.put("Id_pessoa", id);
-
-		// Pega o arquivo .jasper localizado em resources
-		InputStream jasperStream = this.getClass().getResourceAsStream("/relatorios/reportProduto.jasper");
-
-		// Cria o objeto JaperReport com o Stream do arquivo jasper
-		JasperReport jasperReport = (JasperReport) JRLoader.loadObject(jasperStream);
-		// Passa para o JasperPrint o relatório, os parâmetros e a fonte dos dados, no
-		// caso uma conexão ao banco de dados
-		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros, dataSource.getConnection());
-
-		// Configura a respota para o tipo PDF
-		response.setContentType("application/pdf");
-		// Define que o arquivo pode ser visualizado no navegador e também nome final do
-		// arquivo
-		// para fazer download do relatório troque 'inline' por 'attachment'
-		response.setHeader("Content-Disposition", "inline; filename=reportProduto.pdf");
-
-		// Faz a exportação do relatório para o HttpServletResponse
-		final OutputStream outStream = response.getOutputStream();
-		JasperExportManager.exportReportToPdfStream(jasperPrint, outStream);
 	}
 
 	// Falta fazer o metodo pra filtrar os dados do laudo

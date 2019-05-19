@@ -1,13 +1,24 @@
 package com.pedrohnf688.api.controllers;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,12 +30,26 @@ import com.pedrohnf688.api.modelo.LaudoMedia;
 import com.pedrohnf688.api.service.LaudoMediaService;
 import com.pedrohnf688.api.service.LaudoService;
 
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.export.JRXlsExporter;
+import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import net.sf.jasperreports.export.SimpleXlsReportConfiguration;
+
 @RestController
 @RequestMapping("/laudoMedia")
 @CrossOrigin(origins = "*")
 public class LaudoMediaController {
 
 	private static final Logger log = LoggerFactory.getLogger(LaudoMediaController.class);
+
+	@Autowired
+	private DataSource dataSource;
 
 	@Autowired
 	private LaudoService laudoService;
@@ -68,7 +93,7 @@ public class LaudoMediaController {
 		int cont = 0;
 
 		for (int i = 0; i < laudos.size(); i++) {
-			
+
 			Matcher m1 = p.matcher(laudos.get(i).getCasein() != null ? laudos.get(i).getCasein() : "0");
 			Matcher m2 = p.matcher(laudos.get(i).getCbt() != null ? laudos.get(i).getCbt() : "0");
 			Matcher m3 = p.matcher(laudos.get(i).getCcs() != null ? laudos.get(i).getCcs() : "0");
@@ -157,21 +182,21 @@ public class LaudoMediaController {
 
 		LaudoMedia l = new LaudoMedia();
 
-		l.setCasein(media1);
-		l.setCbt(media2);
-		l.setCcs(media3);
-		l.setCel(media4);
-		l.setCmt(media5);
-		l.setDen(media6);
-		l.setFat(media7);
-		l.setFpd(media8);
-		l.setPh(media9);
-		l.setRant(media10);
-		l.setSnf(media11);
-		l.setSolids(media12);
-		l.setTotpro(media13);
-		l.setTrupro(media14);
-		l.setUrea(media15);
+		l.setCaseinMedia(media1);
+		l.setCbtMedia(media2);
+		l.setCcsMedia(media3);
+		l.setCelMedia(media4);
+		l.setCmtMedia(media5);
+		l.setDenMedia(media6);
+		l.setFatMedia(media7);
+		l.setFpdMedia(media8);
+		l.setPhMedia(media9);
+		l.setRantMedia(media10);
+		l.setSnfMedia(media11);
+		l.setSolidsMedia(media12);
+		l.setTotproMedia(media13);
+		l.setTruproMedia(media14);
+		l.setUreaMedia(media15);
 
 		l.setListaLaudos(laudos);
 		this.laudoMediaService.salvar(l);
@@ -179,6 +204,74 @@ public class LaudoMediaController {
 		log.info("Contador:{}", cont);
 
 		return l;
+	}
+
+	// Falta colocar o relatorio pra ser gerado
+	@GetMapping(value = "relatorio/pdf/{id}")
+	public void gerarPdf(@PathVariable("id") Integer id, HttpServletResponse response)
+			throws JRException, SQLException, IOException {
+		log.info("Gerando Relatorio do Laudo para Id: {}", id);
+
+		Map<String, Object> parametros = new HashMap<>();
+
+		parametros.put("Id_LaudoMedia", id);
+
+		// Pega o arquivo .jasper localizado em resources
+		InputStream jasperStream = this.getClass().getResourceAsStream("/relatorios/report2.jasper");
+
+		// Cria o objeto JaperReport com o Stream do arquivo jasper
+		JasperReport jasperReport = (JasperReport) JRLoader.loadObject(jasperStream);
+		// Passa para o JasperPrint o relatório, os parâmetros e a fonte dos dados, no
+		// caso uma conexão ao banco de dados
+		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros, dataSource.getConnection());
+
+		// Configura a respota para o tipo PDF
+		response.setContentType("application/pdf");
+		// Define que o arquivo pode ser visualizado no navegador e também nome final do
+		// arquivo
+		// para fazer download do relatório troque 'inline' por 'attachment'
+		response.setHeader("Content-Disposition", "inline; filename=reportLaudoCliente.pdf");
+
+		// Faz a exportação do relatório para o HttpServletResponse
+		final OutputStream outStream = response.getOutputStream();
+		JasperExportManager.exportReportToPdfStream(jasperPrint, outStream);
+	}
+
+	@GetMapping(value = "relatorio/excel/{id}")
+	public void gerarExcel(@PathVariable("id") Integer id, HttpServletResponse response)
+			throws JRException, SQLException, IOException {
+
+		Map<String, Object> parametros = new HashMap<>();
+
+		parametros.put("Id_LaudoMedia", id);
+
+		InputStream jasperStream = this.getClass().getResourceAsStream("/relatorios/report2.jasper");
+
+		JasperReport jasperReport = (JasperReport) JRLoader.loadObject(jasperStream);
+		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros, dataSource.getConnection());
+
+		response.setContentType("application/x-xls");
+		response.setHeader("Content-Disposition", "inline; filename=reportLaudoCliente.xls");
+
+		final OutputStream outStream = response.getOutputStream();
+
+		JRXlsExporter exportsXLS = new JRXlsExporter();
+
+		exportsXLS.setExporterInput(new SimpleExporterInput(jasperPrint));
+		exportsXLS.setExporterOutput(new SimpleOutputStreamExporterOutput(outStream));
+
+		SimpleXlsReportConfiguration configuration = new SimpleXlsReportConfiguration();
+
+		configuration.setOnePagePerSheet(true);
+		configuration.setDetectCellType(true);
+		configuration.setCollapseRowSpan(false);
+		configuration.setWhitePageBackground(false);
+		configuration.setRemoveEmptySpaceBetweenRows(false);
+
+		exportsXLS.setConfiguration(configuration);
+
+		exportsXLS.exportReport();
+
 	}
 
 }
