@@ -206,7 +206,6 @@ public class LaudoMediaController {
 		return l;
 	}
 
-	// Falta colocar o relatorio pra ser gerado
 	@GetMapping(value = "relatorio/pdf/{id}")
 	public void gerarPdf(@PathVariable("id") Integer id, HttpServletResponse response)
 			throws JRException, SQLException, IOException {

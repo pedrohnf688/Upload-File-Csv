@@ -1,19 +1,12 @@
 package com.pedrohnf688.api.controllers;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.security.NoSuchAlgorithmException;
-import java.sql.SQLException;
 import java.text.ParseException;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import javax.validation.Valid;
 
@@ -36,19 +29,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.pedrohnf688.api.config.Response;
 import com.pedrohnf688.api.modelo.Laudo;
-import com.pedrohnf688.api.modelo.LaudoMedia;
 import com.pedrohnf688.api.repositorio.LaudoMediaRepositorio;
 import com.pedrohnf688.api.repositorio.LaudoRepositorio;
 import com.pedrohnf688.api.service.LaudoMediaService;
 import com.pedrohnf688.api.service.LaudoService;
 import com.pedrohnf688.api.utils.CsvUtils;
-
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperExportManager;
-import net.sf.jasperreports.engine.JasperFillManager;
-import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.util.JRLoader;
 
 @RestController
 @RequestMapping("/laudo")
@@ -97,16 +82,15 @@ public class LaudoController {
 
 	}
 
-	public List<Laudo> PreenchimentodeDados(){
-		List<Laudo> listaLaudo = laudoService.listarLaudos();
-		
-		for (int i = 0; i < listaLaudo.size(); i++) {
-			
-		}
-		return null;
-	}
-	
-	
+//	public List<Laudo> PreenchimentodeDados(){
+//		List<Laudo> listaLaudo = laudoService.listarLaudos();
+//		
+//		for (int i = 0; i < listaLaudo.size(); i++) {
+//			
+//		}
+//		return null;
+//	}
+
 	@PostMapping
 	public ResponseEntity<Response<Laudo>> cadastrarLaudo(@Valid @RequestBody Laudo laudo, BindingResult result)
 			throws NoSuchAlgorithmException {
@@ -239,5 +223,115 @@ public class LaudoController {
 	private void validarDadosExistentes(Laudo l, BindingResult result) {
 
 	}
+
+	@PutMapping(value = "/filtro")
+	public ResponseEntity<Response<List<Laudo>>> filtrarDadosLaudo(BindingResult result)
+			throws NoSuchAlgorithmException {
+//		log.info("Atualizando o Laudo:{}", laudo.toString());
+
+		Response<List<Laudo>> response = new Response<List<Laudo>>();
+
+		List<Laudo> laudoNovo = new ArrayList<Laudo>();
+		List<Laudo> laudo = this.laudoService.listarLaudos();
+
+		this.atualizarFiltraDadosLaudo(laudo, laudoNovo, result);
+
+		if (result.hasErrors()) {
+			log.error("Erro validando Laudo:{}", result.getAllErrors());
+			result.getAllErrors().forEach(error -> response.getErros().add(error.getDefaultMessage()));
+			return ResponseEntity.badRequest().body(response);
+		}
+
+//		this.laudoService.salvar(laudoId.get());
+//		response.setData(laudoId.get());
+
+		return ResponseEntity.ok(response);
+
+	}
+
+	private void atualizarFiltraDadosLaudo(List<Laudo> laudo, List<Laudo> laudoNovo, BindingResult result) {
+		// TODO Auto-generated method stub
+
+	}
+
+//	public static void main(String[] args) {
+//
+//		List<Integer> x = new ArrayList<Integer>();
+//		x.add(1);
+//		x.add(1);
+//		x.add(2);
+//		x.add(5);
+//		x.add(3);
+//		x.add(2);
+//		x.add(9);
+//		x.add(6);
+//		x.add(3);
+//		x.add(3);
+//
+//		// numero 1:2 ==> 2
+//		// numero 2:2 ==> 4
+//		// numero 5:1 ==> 5
+//		// numero 3:3 ==> 9
+//		// numero 6:1 ==> 6
+//
+//		int contRepetidos[] = new int[10];
+//		int soma[] = new int[10];
+//		int media[] = new int[10];
+//
+//		for (int i = 0; i < x.size(); i++) {
+//			for (int j = 0; j < x.size(); j++) {
+//				if (x.get(i) == x.get(j)) {
+//					contRepetidos[i]++;
+//				}
+//			}
+//			System.out.println("\n Repeticões numero " + x.get(i) + ": " + contRepetidos[i] + " vezes"
+//					+ " Soma dos Valores: " + soma[i]);
+//		}
+//
+//		for (int y = 0; y < contRepetidos.length; y++) {
+//			for (int z = 0; z < contRepetidos.length; z++) {
+//				if (contRepetidos[y] == contRepetidos[z] && x.get(y) == x.get(z)) {
+//					soma[y] += x.get(z);
+//				}
+//			}
+//
+//			soma[y] /= contRepetidos[y];
+//			System.out.println("\nMedia dos Valores: " + soma[y]);
+//		}
+//
+////		for (int i = 0; i < 10; i++) {
+////			System.out.println("\nMedia: " + soma[i]);
+////		}
+//
+//	}
+//
+////	  public static void main( String[ ] args ) {
+////	        int[ ] original = { 1 , 8 , 5 , 7 , 3 , 5 , 3 };
+////
+////	        // remover repetidos
+////	        int[ ] unicos = new int[ original.length ];
+////	        int qtd = 0;
+////	        for( int i = 0 ; i < original.length ; i++ ) {
+////	            boolean existe = false;
+////	            for( int j = 0 ; j < qtd ; j++ ) {
+////	                if( unicos[ j ] == original[ i ] ) {
+////	                    existe = true;
+////	                    break;
+////	                }
+////	            }
+////	            if( !existe ) {
+////	                unicos[ qtd++ ] = original[ i ];
+////	            }
+////	        }
+////
+////	        // ajuste do tamanho do vetor resultante
+////	        unicos = Arrays.copyOf( unicos , qtd );
+////
+////	        // imprime resultado
+////	        for( int i = 0 ; i < unicos.length ; i++ ) {
+////	            System.out.println( "" + i + " = " + unicos[ i ] );
+////	        }
+////
+////	    }
 
 }

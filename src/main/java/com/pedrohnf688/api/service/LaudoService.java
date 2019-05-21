@@ -33,9 +33,14 @@ public class LaudoService {
 		return laudos;
 	}
 
-	public void salvar(Laudo laudo) {
+	public List<Laudo> salvarListaLaudo(List<Laudo> laudos) {
+		log.info("Salvando Lista de Laudos");
+		return this.laudoRepositorio.saveAll(laudos);
+	}
+
+	public Laudo salvar(Laudo laudo) {
 		log.info("Salvando Laudo");
-		this.laudoRepositorio.save(laudo);
+		return this.laudoRepositorio.save(laudo);
 	}
 
 	public void deletarTodoLaudo() {
@@ -73,24 +78,26 @@ public class LaudoService {
 		return data;
 	}
 
-	public List<Laudo> FiltrarDados() {
-
-		List<Laudo> laudoRecebido = this.laudoRepositorio.findAll();
-		int contRepetidos = 0;
-
-		for (int i = 0; i < laudoRecebido.size(); i++) {
-			contRepetidos = 0;
-			for (int j = 0; j < laudoRecebido.size(); j++) {
-				if (laudoRecebido.get(i).getSequence() == laudoRecebido.get(j).getSequence()) {
-					contRepetidos++;
-				}
-
-			}
-			System.out.println(
-					"\n Repeticões numero " + laudoRecebido.get(i).getSequence() + ": " + contRepetidos + " vezes");
-		}
-
-		return null;
-	}
+//	public List<Laudo> FiltrarDados() {
+//          
+//		List<Laudo> laudoRecebido = this.laudoRepositorio.findAll();
+//		int contRepetidos = 0;
+//
+//		for (int i = 0; i < laudoRecebido.size()-1; i++) {
+//			contRepetidos = 0;
+//			for (int j = i+1; j < laudoRecebido.size(); j++) {
+//				if (laudoRecebido.get(i).getSequence() == laudoRecebido.get(j).getSequence()) {
+//					contRepetidos++;
+//				}
+//
+//			}
+//			
+//			//if(laudoRecebido.get(i).getSequence() == )
+//			System.out.println(
+//					"\n Repeticões numero " + laudoRecebido.get(i).getSequence() + ": " + contRepetidos + " vezes");
+//		}
+//
+//		return null;
+//	}
 
 }
