@@ -112,50 +112,50 @@ public class LaudoMediaController {
 			Matcher m14 = p.matcher(laudos.get(i).getTrupro() != null ? laudos.get(i).getTrupro() : "0");
 			Matcher m15 = p.matcher(laudos.get(i).getUrea() != null ? laudos.get(i).getUrea() : "0");
 
-			media1 = (m1.find() && m1.group().equals(laudos.get(i).getCasein()))
+			media1 += (m1.find() && m1.group().equals(laudos.get(i).getCasein()))
 					? Double.parseDouble(laudos.get(i).getCasein())
 					: 0;
-			media2 = (m2.find() && m2.group().equals(laudos.get(i).getCbt()))
+			media2 += (m2.find() && m2.group().equals(laudos.get(i).getCbt()))
 					? Double.parseDouble(laudos.get(i).getCbt())
 					: 0;
-			media3 = (m3.find() && m3.group().equals(laudos.get(i).getCcs()))
+			media3 += (m3.find() && m3.group().equals(laudos.get(i).getCcs()))
 					? Double.parseDouble(laudos.get(i).getCcs())
 					: 0;
-			media4 = (m4.find() && m4.group().equals(laudos.get(i).getCel()))
+			media4 += (m4.find() && m4.group().equals(laudos.get(i).getCel()))
 					? Double.parseDouble(laudos.get(i).getCel())
 					: 0;
-			media5 = (m5.find() && m5.group().equals(laudos.get(i).getCmt()))
+			media5 += (m5.find() && m5.group().equals(laudos.get(i).getCmt()))
 					? Double.parseDouble(laudos.get(i).getCmt())
 					: 0;
 
-			media6 = (m6.find() && m6.group().equals(laudos.get(i).getDen()))
+			media6 += (m6.find() && m6.group().equals(laudos.get(i).getDen()))
 					? Double.parseDouble(laudos.get(i).getDen())
 					: 0;
-			media7 = (m7.find() && m7.group().equals(laudos.get(i).getFat()))
+			media7 += (m7.find() && m7.group().equals(laudos.get(i).getFat()))
 					? Double.parseDouble(laudos.get(i).getFat())
 					: 0;
-			media8 = (m8.find() && m8.group().equals(laudos.get(i).getFpd()))
+			media8 += (m8.find() && m8.group().equals(laudos.get(i).getFpd()))
 					? Double.parseDouble(laudos.get(i).getFpd())
 					: 0;
-			media9 = (m9.find() && m9.group().equals(laudos.get(i).getPh())) ? Double.parseDouble(laudos.get(i).getPh())
+			media9 += (m9.find() && m9.group().equals(laudos.get(i).getPh())) ? Double.parseDouble(laudos.get(i).getPh())
 					: 0;
-			media10 = (m10.find() && m10.group().equals(laudos.get(i).getRant()))
+			media10 += (m10.find() && m10.group().equals(laudos.get(i).getRant()))
 					? Double.parseDouble(laudos.get(i).getRant())
 					: 0;
 
-			media11 = (m11.find() && m11.group().equals(laudos.get(i).getSnf()))
+			media11 += (m11.find() && m11.group().equals(laudos.get(i).getSnf()))
 					? Double.parseDouble(laudos.get(i).getSnf())
 					: 0;
-			media12 = (m12.find() && m12.group().equals(laudos.get(i).getSolids()))
+			media12 += (m12.find() && m12.group().equals(laudos.get(i).getSolids()))
 					? Double.parseDouble(laudos.get(i).getSolids())
 					: 0;
-			media13 = (m13.find() && m13.group().equals(laudos.get(i).getTotpro()))
+			media13 += (m13.find() && m13.group().equals(laudos.get(i).getTotpro()))
 					? Double.parseDouble(laudos.get(i).getTotpro())
 					: 0;
-			media14 = (m14.find() && m14.group().equals(laudos.get(i).getTrupro()))
+			media14 += (m14.find() && m14.group().equals(laudos.get(i).getTrupro()))
 					? Double.parseDouble(laudos.get(i).getTrupro())
 					: 0;
-			media15 = (m15.find() && m15.group().equals(laudos.get(i).getUrea()))
+			media15 += (m15.find() && m15.group().equals(laudos.get(i).getUrea()))
 					? Double.parseDouble(laudos.get(i).getUrea())
 					: 0;
 

@@ -6,6 +6,8 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.sql.DataSource;
 import javax.validation.Valid;
@@ -81,15 +83,6 @@ public class LaudoController {
 		}
 
 	}
-
-//	public List<Laudo> PreenchimentodeDados(){
-//		List<Laudo> listaLaudo = laudoService.listarLaudos();
-//		
-//		for (int i = 0; i < listaLaudo.size(); i++) {
-//			
-//		}
-//		return null;
-//	}
 
 	@PostMapping
 	public ResponseEntity<Response<Laudo>> cadastrarLaudo(@Valid @RequestBody Laudo laudo, BindingResult result)
@@ -251,6 +244,136 @@ public class LaudoController {
 
 	private void atualizarFiltraDadosLaudo(List<Laudo> laudo, List<Laudo> laudoNovo, BindingResult result) {
 		// TODO Auto-generated method stub
+
+		int contRepetidos[] = new int[laudo.size()];
+
+		int somaCasein[] = new int[laudo.size()];
+		int somaCbt[] = new int[laudo.size()];
+		int somaCcs[] = new int[laudo.size()];
+		int somaCel[] = new int[laudo.size()];
+		int somaCmt[] = new int[laudo.size()];
+
+		int somaDen[] = new int[laudo.size()];
+		int somaFat[] = new int[laudo.size()];
+		int somaFpd[] = new int[laudo.size()];
+		int somaPh[] = new int[laudo.size()];
+		int somaRant[] = new int[laudo.size()];
+
+		int somaSnf[] = new int[laudo.size()];
+		int somaSolids[] = new int[laudo.size()];
+		int somaTotpro[] = new int[laudo.size()];
+		int somaTrupro[] = new int[laudo.size()];
+		int somaUrea[] = new int[laudo.size()];
+
+		int media[] = new int[laudo.size()];
+
+		String regex = "[+-]?[0-9]+(\\.[0-9]+)?([Ee][+-]?[0-9]+)?";
+		// compiling regex
+		Pattern p = Pattern.compile(regex);
+
+		for (int i = 0; i < laudo.size(); i++) {
+			for (int j = 0; j < laudo.size(); j++) {
+				if (laudo.get(i).getSequence() == laudo.get(j).getSequence()) {
+					contRepetidos[i]++;
+				}
+			}
+			System.out
+					.println("\n Repeticões numero " + laudo.get(i).getSequence() + ": " + contRepetidos[i] + " vezes");
+		}
+
+		for (int y = 0; y < contRepetidos.length; y++) {
+			for (int z = 0; z < contRepetidos.length; z++) {
+				if (contRepetidos[y] == contRepetidos[z] && laudo.get(y).getSequence() == laudo.get(z).getSequence()) {
+
+					Matcher m1 = p.matcher(laudo.get(z).getCasein() != null ? laudo.get(z).getCasein() : "0");
+					Matcher m2 = p.matcher(laudo.get(z).getCbt() != null ? laudo.get(z).getCbt() : "0");
+					Matcher m3 = p.matcher(laudo.get(z).getCcs() != null ? laudo.get(z).getCcs() : "0");
+					Matcher m4 = p.matcher(laudo.get(z).getCel() != null ? laudo.get(z).getCel() : "0");
+					Matcher m5 = p.matcher(laudo.get(z).getCmt() != null ? laudo.get(z).getCmt() : "0");
+
+					Matcher m6 = p.matcher(laudo.get(z).getDen() != null ? laudo.get(z).getDen() : "0");
+					Matcher m7 = p.matcher(laudo.get(z).getFat() != null ? laudo.get(z).getFat() : "0");
+					Matcher m8 = p.matcher(laudo.get(z).getFpd() != null ? laudo.get(z).getFpd() : "0");
+					Matcher m9 = p.matcher(laudo.get(z).getPh() != null ? laudo.get(z).getPh() : "0");
+					Matcher m10 = p.matcher(laudo.get(z).getRant() != null ? laudo.get(z).getRant() : "0");
+
+					Matcher m11 = p.matcher(laudo.get(z).getSnf() != null ? laudo.get(z).getSnf() : "0");
+					Matcher m12 = p.matcher(laudo.get(z).getSolids() != null ? laudo.get(z).getSolids() : "0");
+					Matcher m13 = p.matcher(laudo.get(z).getTotpro() != null ? laudo.get(z).getTotpro() : "0");
+					Matcher m14 = p.matcher(laudo.get(z).getTrupro() != null ? laudo.get(z).getTrupro() : "0");
+					Matcher m15 = p.matcher(laudo.get(z).getUrea() != null ? laudo.get(z).getUrea() : "0");
+
+					somaCasein[y] += (m1.find() && m1.group().equals(laudo.get(z).getCasein()))
+							? Double.parseDouble(laudo.get(z).getCasein())
+							: 0;
+					somaCbt[y] += (m2.find() && m2.group().equals(laudo.get(z).getCbt()))
+							? Double.parseDouble(laudo.get(z).getCbt())
+							: 0;
+					somaCcs[y] += (m3.find() && m3.group().equals(laudo.get(z).getCcs()))
+							? Double.parseDouble(laudo.get(z).getCcs())
+							: 0;
+					somaCel[y] += (m4.find() && m4.group().equals(laudo.get(z).getCel()))
+							? Double.parseDouble(laudo.get(z).getCel())
+							: 0;
+					somaCmt[y] += (m5.find() && m5.group().equals(laudo.get(z).getCmt()))
+							? Double.parseDouble(laudo.get(z).getCmt())
+							: 0;
+
+					somaDen[y] += (m6.find() && m6.group().equals(laudo.get(z).getDen()))
+							? Double.parseDouble(laudo.get(z).getDen())
+							: 0;
+					somaFat[y] += (m7.find() && m7.group().equals(laudo.get(z).getFat()))
+							? Double.parseDouble(laudo.get(z).getFat())
+							: 0;
+					somaFpd[y] += (m8.find() && m8.group().equals(laudo.get(z).getFpd()))
+							? Double.parseDouble(laudo.get(z).getFpd())
+							: 0;
+					somaPh[y] += (m9.find() && m9.group().equals(laudo.get(z).getPh()))
+							? Double.parseDouble(laudo.get(z).getPh())
+							: 0;
+					somaRant[y] += (m10.find() && m10.group().equals(laudo.get(z).getRant()))
+							? Double.parseDouble(laudo.get(z).getRant())
+							: 0;
+
+					somaSnf[y] += (m11.find() && m11.group().equals(laudo.get(z).getSnf()))
+							? Double.parseDouble(laudo.get(z).getSnf())
+							: 0;
+					somaSolids[y] += (m12.find() && m12.group().equals(laudo.get(z).getSolids()))
+							? Double.parseDouble(laudo.get(z).getSolids())
+							: 0;
+					somaTotpro[y] += (m13.find() && m13.group().equals(laudo.get(z).getTotpro()))
+							? Double.parseDouble(laudo.get(z).getTotpro())
+							: 0;
+					somaTrupro[y] += (m14.find() && m14.group().equals(laudo.get(z).getTrupro()))
+							? Double.parseDouble(laudo.get(z).getTrupro())
+							: 0;
+					somaUrea[y] += (m15.find() && m15.group().equals(laudo.get(z).getUrea()))
+							? Double.parseDouble(laudo.get(z).getUrea())
+							: 0;
+
+				}
+			}
+
+			somaCasein[y] /= contRepetidos[y];
+			somaCbt[y] /= contRepetidos[y];
+			somaCcs[y] /= contRepetidos[y];
+			somaCel[y] /= contRepetidos[y];
+			somaCmt[y] /= contRepetidos[y];
+
+			somaDen[y] /= contRepetidos[y];
+			somaFat[y] /= contRepetidos[y];
+			somaFpd[y] /= contRepetidos[y];
+			somaPh[y] /= contRepetidos[y];
+			somaRant[y] /= contRepetidos[y];
+
+			somaSnf[y] /= contRepetidos[y];
+			somaSolids[y] /= contRepetidos[y];
+			somaTotpro[y] /= contRepetidos[y];
+			somaTrupro[y] /= contRepetidos[y];
+			somaUrea[y] /= contRepetidos[y];
+
+			System.out.println("\nMedia dos Valores: " + somaCasein[y]);
+		}
 
 	}
 
