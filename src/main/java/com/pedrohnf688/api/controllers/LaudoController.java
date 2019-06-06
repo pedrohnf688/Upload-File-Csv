@@ -4,12 +4,12 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.sql.DataSource;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -31,9 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.pedrohnf688.api.config.Response;
 import com.pedrohnf688.api.modelo.Laudo;
-import com.pedrohnf688.api.repositorio.LaudoMediaRepositorio;
 import com.pedrohnf688.api.repositorio.LaudoRepositorio;
-import com.pedrohnf688.api.service.LaudoMediaService;
 import com.pedrohnf688.api.service.LaudoService;
 import com.pedrohnf688.api.utils.CsvUtils;
 
@@ -45,19 +43,10 @@ public class LaudoController {
 	private static final Logger log = LoggerFactory.getLogger(LaudoController.class);
 
 	@Autowired
-	private DataSource dataSource;
-
-	@Autowired
 	private LaudoService laudoService;
 
 	@Autowired
 	private LaudoRepositorio laudoRepositorio;
-
-	@Autowired
-	private LaudoMediaRepositorio laudoMediaRepositorio;
-
-	@Autowired
-	private LaudoMediaService laudoMediaService;
 
 	@GetMapping
 	public List<Laudo> listarLaudos() {
@@ -197,8 +186,6 @@ public class LaudoController {
 		return ResponseEntity.ok(response);
 	}
 
-	// Falta fazer o metodo pra filtrar os dados do laudo
-
 	private void atualizarDadosLaudo(Laudo laudoId, Laudo laudo, BindingResult result) throws NoSuchAlgorithmException {
 
 		laudoId.setCbt(laudo.getCbt());
@@ -217,34 +204,28 @@ public class LaudoController {
 
 	}
 
-	@PutMapping(value = "/filtro")
-	public ResponseEntity<Response<List<Laudo>>> filtrarDadosLaudo(BindingResult result)
+	@GetMapping(value = "/filtro")
+	public ResponseEntity<Response<List<Laudo>>> filtrarDadosLaudo(@RequestParam("batchId") String batchId)
 			throws NoSuchAlgorithmException {
-//		log.info("Atualizando o Laudo:{}", laudo.toString());
+		log.info("Atualizando o Laudo do Batch:{}", batchId);
 
 		Response<List<Laudo>> response = new Response<List<Laudo>>();
 
 		List<Laudo> laudoNovo = new ArrayList<Laudo>();
-		List<Laudo> laudo = this.laudoService.listarLaudos();
+		List<Laudo> laudo = this.laudoService.buscarPorBatchId(batchId);
 
-		this.atualizarFiltraDadosLaudo(laudo, laudoNovo, result);
-
-		if (result.hasErrors()) {
-			log.error("Erro validando Laudo:{}", result.getAllErrors());
-			result.getAllErrors().forEach(error -> response.getErros().add(error.getDefaultMessage()));
-			return ResponseEntity.badRequest().body(response);
-		}
+		this.atualizarFiltraDadosLaudo(laudo, laudoNovo);
 
 //		this.laudoService.salvar(laudoId.get());
-//		response.setData(laudoId.get());
+		response.setData(laudoNovo);
 
 		return ResponseEntity.ok(response);
 
 	}
 
-	private void atualizarFiltraDadosLaudo(List<Laudo> laudo, List<Laudo> laudoNovo, BindingResult result) {
-		// TODO Auto-generated method stub
+	private void atualizarFiltraDadosLaudo(List<Laudo> laudo, List<Laudo> laudoNovo) {
 
+		Laudo la = new Laudo();
 		int contRepetidos[] = new int[laudo.size()];
 
 		int somaCasein[] = new int[laudo.size()];
@@ -265,15 +246,13 @@ public class LaudoController {
 		int somaTrupro[] = new int[laudo.size()];
 		int somaUrea[] = new int[laudo.size()];
 
-		int media[] = new int[laudo.size()];
-
 		String regex = "[+-]?[0-9]+(\\.[0-9]+)?([Ee][+-]?[0-9]+)?";
 		// compiling regex
 		Pattern p = Pattern.compile(regex);
 
 		for (int i = 0; i < laudo.size(); i++) {
 			for (int j = 0; j < laudo.size(); j++) {
-				if (laudo.get(i).getSequence() == laudo.get(j).getSequence()) {
+				if (laudo.get(i).getSequence().equals(laudo.get(j).getSequence())) {
 					contRepetidos[i]++;
 				}
 			}
@@ -354,80 +333,92 @@ public class LaudoController {
 				}
 			}
 
-			somaCasein[y] /= contRepetidos[y];
-			somaCbt[y] /= contRepetidos[y];
-			somaCcs[y] /= contRepetidos[y];
-			somaCel[y] /= contRepetidos[y];
-			somaCmt[y] /= contRepetidos[y];
+			System.out.println("Vetor de Casein Soma:" + somaCasein[y] + "\nCont:" + contRepetidos[y]);
 
-			somaDen[y] /= contRepetidos[y];
-			somaFat[y] /= contRepetidos[y];
-			somaFpd[y] /= contRepetidos[y];
-			somaPh[y] /= contRepetidos[y];
-			somaRant[y] /= contRepetidos[y];
+		}
 
-			somaSnf[y] /= contRepetidos[y];
-			somaSolids[y] /= contRepetidos[y];
-			somaTotpro[y] /= contRepetidos[y];
-			somaTrupro[y] /= contRepetidos[y];
-			somaUrea[y] /= contRepetidos[y];
+		for (int s = 0; s < contRepetidos.length; s++) {
 
-			System.out.println("\nMedia dos Valores: " + somaCasein[y]);
+			somaCasein[s] /= contRepetidos[s];
+			somaCbt[s] /= contRepetidos[s];
+			somaCcs[s] /= contRepetidos[s];
+			somaCel[s] /= contRepetidos[s];
+			somaCmt[s] /= contRepetidos[s];
+
+			somaDen[s] /= contRepetidos[s];
+			somaFat[s] /= contRepetidos[s];
+			somaFpd[s] /= contRepetidos[s];
+			somaPh[s] /= contRepetidos[s];
+			somaRant[s] /= contRepetidos[s];
+
+			somaSnf[s] /= contRepetidos[s];
+			somaSolids[s] /= contRepetidos[s];
+			somaTotpro[s] /= contRepetidos[s];
+			somaTrupro[s] /= contRepetidos[s];
+			somaUrea[s] /= contRepetidos[s];
+
+			System.out.println("Media Casein:" + somaCasein[s] + "Contador" + contRepetidos[s]);
+
+		}
+
+		for (int a = 0; a < laudo.size(); a++) {
+			for (int b = 0; b < laudo.size(); b++) {
+
+				if (laudo.get(a).getSequence() == laudo.get(b).getSequence() && a > 1) {
+
+					la.setBatchId(laudo.get(a).getBatchId());
+					la.setCasein(String.valueOf(somaCasein[a - 1]));
+					la.setCbt(String.valueOf(somaCbt[a - 1]));
+					la.setCcs(String.valueOf(somaCcs[a - 1]));
+					la.setCel(String.valueOf(somaCel[a - 1]));
+					la.setCmt(String.valueOf(somaCmt[a - 1]));
+					la.setDate(laudo.get(a).getDate());
+					la.setDen(String.valueOf(somaDen[a - 1]));
+					la.setFat(String.valueOf(somaFat[a - 1]));
+					la.setFpd(String.valueOf(somaFpd[a - 1]));
+					la.setPh(String.valueOf(somaPh[a - 1]));
+					la.setRant(String.valueOf(somaRant[a - 1]));
+					la.setSampleid(laudo.get(a).getSampleid());
+					la.setSequence(laudo.get(a).getSequence());
+					la.setSnf(String.valueOf(somaSnf[a - 1]));
+					la.setSolids(String.valueOf(somaSolids[a - 1]));
+					la.setTotpro(String.valueOf(somaTotpro[a - 1]));
+					la.setTrupro(String.valueOf(somaTrupro[a - 1]));
+					la.setUrea(String.valueOf(somaUrea[a - 1]));
+
+				} else {
+
+					la.setBatchId(laudo.get(a).getBatchId());
+					la.setCasein(String.valueOf(somaCasein[a]));
+					la.setCbt(String.valueOf(somaCbt[a]));
+					la.setCcs(String.valueOf(somaCcs[a]));
+					la.setCel(String.valueOf(somaCel[a]));
+					la.setCmt(String.valueOf(somaCmt[a]));
+					la.setDate(laudo.get(a).getDate());
+					la.setDen(String.valueOf(somaDen[a]));
+					la.setFat(String.valueOf(somaFat[a]));
+					la.setFpd(String.valueOf(somaFpd[a]));
+					la.setPh(String.valueOf(somaPh[a]));
+					la.setRant(String.valueOf(somaRant[a]));
+					la.setSampleid(laudo.get(a).getSampleid());
+					la.setSequence(laudo.get(a).getSequence());
+					la.setSnf(String.valueOf(somaSnf[a]));
+					la.setSolids(String.valueOf(somaSolids[a]));
+					la.setTotpro(String.valueOf(somaTotpro[a]));
+					la.setTrupro(String.valueOf(somaTrupro[a]));
+					la.setUrea(String.valueOf(somaUrea[a]));
+
+				}
+
+				laudoNovo.add(la);
+			}
+
+			System.out.println(laudoNovo.get(a));
+
 		}
 
 	}
 
-//	public static void main(String[] args) {
-//
-//		List<Integer> x = new ArrayList<Integer>();
-//		x.add(1);
-//		x.add(1);
-//		x.add(2);
-//		x.add(5);
-//		x.add(3);
-//		x.add(2);
-//		x.add(9);
-//		x.add(6);
-//		x.add(3);
-//		x.add(3);
-//
-//		// numero 1:2 ==> 2
-//		// numero 2:2 ==> 4
-//		// numero 5:1 ==> 5
-//		// numero 3:3 ==> 9
-//		// numero 6:1 ==> 6
-//
-//		int contRepetidos[] = new int[10];
-//		int soma[] = new int[10];
-//		int media[] = new int[10];
-//
-//		for (int i = 0; i < x.size(); i++) {
-//			for (int j = 0; j < x.size(); j++) {
-//				if (x.get(i) == x.get(j)) {
-//					contRepetidos[i]++;
-//				}
-//			}
-//			System.out.println("\n Repeticões numero " + x.get(i) + ": " + contRepetidos[i] + " vezes"
-//					+ " Soma dos Valores: " + soma[i]);
-//		}
-//
-//		for (int y = 0; y < contRepetidos.length; y++) {
-//			for (int z = 0; z < contRepetidos.length; z++) {
-//				if (contRepetidos[y] == contRepetidos[z] && x.get(y) == x.get(z)) {
-//					soma[y] += x.get(z);
-//				}
-//			}
-//
-//			soma[y] /= contRepetidos[y];
-//			System.out.println("\nMedia dos Valores: " + soma[y]);
-//		}
-//
-////		for (int i = 0; i < 10; i++) {
-////			System.out.println("\nMedia: " + soma[i]);
-////		}
-//
-//	}
-//
 ////	  public static void main( String[ ] args ) {
 ////	        int[ ] original = { 1 , 8 , 5 , 7 , 3 , 5 , 3 };
 ////

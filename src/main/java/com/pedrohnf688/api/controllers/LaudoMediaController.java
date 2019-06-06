@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.pedrohnf688.api.config.Response;
 import com.pedrohnf688.api.modelo.Laudo;
 import com.pedrohnf688.api.modelo.LaudoMedia;
 import com.pedrohnf688.api.service.LaudoMediaService;
@@ -64,8 +63,6 @@ public class LaudoMediaController {
 
 	public LaudoMedia mediaAritmeticaLaudo(String batchId) {
 		log.info("Metodo para gerar a media dos atributos do laudo por solicitação:");
-
-		Response<LaudoMedia> response = new Response<LaudoMedia>();
 
 		List<Laudo> laudos = this.laudoService.buscarPorBatchId(batchId);
 
@@ -137,7 +134,8 @@ public class LaudoMediaController {
 			media8 += (m8.find() && m8.group().equals(laudos.get(i).getFpd()))
 					? Double.parseDouble(laudos.get(i).getFpd())
 					: 0;
-			media9 += (m9.find() && m9.group().equals(laudos.get(i).getPh())) ? Double.parseDouble(laudos.get(i).getPh())
+			media9 += (m9.find() && m9.group().equals(laudos.get(i).getPh()))
+					? Double.parseDouble(laudos.get(i).getPh())
 					: 0;
 			media10 += (m10.find() && m10.group().equals(laudos.get(i).getRant()))
 					? Double.parseDouble(laudos.get(i).getRant())

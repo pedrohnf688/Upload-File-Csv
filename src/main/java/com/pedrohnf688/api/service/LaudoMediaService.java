@@ -26,9 +26,5 @@ public class LaudoMediaService {
 	public List<LaudoMedia> listarTodasMedias() {
 		return this.laudoMediaRepositorio.findAll();
 	}
-	
-	public List<LaudoMedia> AtualizarMediaLaudo() {
-		return null;
-	}
 
 }

@@ -78,26 +78,4 @@ public class LaudoService {
 		return data;
 	}
 
-//	public List<Laudo> FiltrarDados() {
-//          
-//		List<Laudo> laudoRecebido = this.laudoRepositorio.findAll();
-//		int contRepetidos = 0;
-//
-//		for (int i = 0; i < laudoRecebido.size()-1; i++) {
-//			contRepetidos = 0;
-//			for (int j = i+1; j < laudoRecebido.size(); j++) {
-//				if (laudoRecebido.get(i).getSequence() == laudoRecebido.get(j).getSequence()) {
-//					contRepetidos++;
-//				}
-//
-//			}
-//			
-//			//if(laudoRecebido.get(i).getSequence() == )
-//			System.out.println(
-//					"\n Repeticões numero " + laudoRecebido.get(i).getSequence() + ": " + contRepetidos + " vezes");
-//		}
-//
-//		return null;
-//	}
-
 }
